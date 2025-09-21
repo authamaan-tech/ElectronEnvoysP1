@@ -20,7 +20,7 @@
       margin-top: 30px;
       font-size: 1.8rem;
     }
-    .relay-card, .pir-card {
+    .relay-card {
       display: inline-block;
       background-color: white;
       padding: 20px;
@@ -30,15 +30,15 @@
       width: 220px;
       vertical-align: top;
     }
-    .relay-card h2, .pir-card h2 {
+    .relay-card h2 {
       margin-bottom: 10px;
       font-size: 1.3rem;
     }
-    .relay-card p, .pir-card p {
+    .relay-card p {
       margin-bottom: 10px;
       font-size: 1rem;
     }
-    .relay-card button, .pir-card button {
+    .relay-card button {
       padding: 10px 20px;
       border: none;
       border-radius: 10px;
@@ -46,10 +46,10 @@
       background-color: blue;
       cursor: pointer;
       font-size: 16px;
-      width: 90%;
+	  width: 90%;
       transition: opacity 0.3s ease;
     }
-    .relay-card button:hover, .pir-card button:hover {
+    .relay-card button:hover {
       opacity: 0.8;
     }
     #allOffBtn, #logoutBtn {
@@ -76,11 +76,6 @@
     }
     #logoutBtn:hover {
       opacity: 0.8;
-    }
-    .pir-card {
-      max-width: 300px;
-      width: 90%;
-      margin: 20px auto;
     }
 
     /* Responsive layout */
@@ -153,12 +148,14 @@
 
   <h1>ESP32 Relay Control Dashboard</h1>
 
+  <!-- Login form -->
   <div id="loginForm">
     <input type="email" id="email" placeholder="Enter Email" required />
     <input type="password" id="password" placeholder="Enter Password" required />
     <button id="loginBtn">Login</button>
   </div>
 
+  <!-- Dashboard -->
   <div id="dashboard">
     <div class="relay-container">
       <div class="relay-card">
@@ -186,12 +183,6 @@
       </div>
     </div>
 
-    <div class="pir-card">
-        <h2>PIR Sensor Control</h2>
-        <p>Auto-Mode: <span id="pirStatus">Loading...</span></p>
-        <button id="pirToggleBtn">Toggle Auto-Mode</button>
-    </div>
-
     <button id="allOffBtn">All OFF</button>
     <button id="logoutBtn">Logout</button>
   </div>
@@ -200,6 +191,7 @@
     Created by Tech StudyCell
   </footer>
 
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
@@ -207,21 +199,21 @@
   <script>
     // Firebase config
     const firebaseConfig = {
-      apiKey: "AIzaSyAQ9xSxciJrT67g0k5D8iV0NMSukmyhsHw",
-      authDomain: "esp32-sustainable-dev1.firebaseapp.com",
-      databaseURL: "https://esp32-sustainable-dev1-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "esp32-sustainable-dev1",
-      storageBucket: "esp32-sustainable-dev1.firebasestorage.app",
-      messagingSenderId: "666476440113",
-      appId: "1:666476440113:web:aa9eec1932107604fd8310",
-      measurementId: "G-PY6RN285DJ"
-    };
+  apiKey: "AIzaSyAQ9xSxciJrT67g0k5D8iV0NMSukmyhsHw",
+  authDomain: "esp32-sustainable-dev1.firebaseapp.com",
+  databaseURL: "https://esp32-sustainable-dev1-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "esp32-sustainable-dev1",
+  storageBucket: "esp32-sustainable-dev1.firebasestorage.app",
+  messagingSenderId: "666476440113",
+  appId: "1:666476440113:web:aa9eec1932107604fd8310",
+  measurementId: "G-PY6RN285DJ"
+};
 
     firebase.initializeApp(firebaseConfig);
 
     // Predefined login credentials (can be replaced with your logic)
-    const allowedEmail = "auth.amaan@gmail.com";
-    const allowedPassword = "210706";
+    const allowedEmail = "abc@gmail.com";
+    const allowedPassword = "90009550";
 
     const loginForm = document.getElementById("loginForm");
     const dashboard = document.getElementById("dashboard");
@@ -281,24 +273,6 @@
           });
         };
       });
-
-      // --- New PIR Sensor Control Logic ---
-      const pirStatusText = document.getElementById("pirStatus");
-      const pirToggleButton = document.getElementById("pirToggleBtn");
-      const pirRef = db.ref("/autoControlEnabled");
-
-      pirRef.on("value", (snapshot) => {
-        const state = snapshot.val();
-        pirStatusText.innerText = state ? "ENABLED" : "DISABLED";
-        pirToggleButton.style.backgroundColor = state ? "green" : "#f44336"; // Red for disabled
-      });
-
-      pirToggleButton.onclick = () => {
-        pirRef.get().then(snap => {
-          pirRef.set(!snap.val());
-        });
-      };
-      // --- End New Logic ---
 
       document.getElementById("allOffBtn").onclick = () => {
         relays.forEach(relay => {
